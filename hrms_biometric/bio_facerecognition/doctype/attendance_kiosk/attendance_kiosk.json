@@ -1,0 +1,103 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-02-12 21:16:41.734387",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "kiosk_section",
+  "kiosk_name",
+  "location",
+  "column_break_1",
+  "is_active",
+  "timezone",
+  "attendance_interface_section",
+  "attendance_interface"
+ ],
+ "fields": [
+  {
+   "fieldname": "kiosk_section",
+   "fieldtype": "Section Break",
+   "label": "Kiosk Information"
+  },
+  {
+   "fieldname": "kiosk_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Kiosk Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Location",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Is Active",
+   "default": 1
+  },
+  {
+   "fieldname": "timezone",
+   "fieldtype": "Select",
+   "label": "Timezone",
+   "options": "Asia/Kolkata\nAmerica/New_York\nEurope/London\nAsia/Tokyo\nAustralia/Sydney",
+   "default": "Asia/Kolkata"
+  },
+  {
+   "fieldname": "attendance_interface_section",
+   "fieldtype": "Section Break",
+   "label": "Attendance Interface"
+  },
+  {
+   "fieldname": "attendance_interface",
+   "fieldtype": "HTML",
+   "label": "Face Recognition Interface"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-02-12 22:09:42.648983",
+ "modified_by": "Administrator",
+ "module": "Bio Facerecognition",
+ "name": "Attendance Kiosk",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Employee",
+   "share": 0,
+   "write": 0
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

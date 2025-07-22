@@ -1,0 +1,471 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-02-12 21:16:41.734387",
+ "default_view": "List",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "issingle": 1,
+ "field_order": [
+  "recognition_parameters_section",
+  "recognition_tolerance",
+  "recognition_model",
+  "num_jitters",
+  "column_break_1",
+  "face_detection_model",
+  "upsample_times",
+  "confidence_threshold",
+  "performance_settings_section",
+  "recognition_cooldown",
+  "max_face_images",
+  "image_quality_threshold",
+  "column_break_2",
+  "auto_cleanup_days",
+  "enable_face_enhancement",
+  "enable_anti_spoofing",
+  "working_hours_section",
+  "working_hours_start",
+  "working_hours_end",
+  "late_arrival_threshold",
+  "column_break_3",
+  "early_departure_threshold",
+  "lunch_break_hours",
+  "standard_working_hours",
+  "payroll_integration_section",
+  "default_hourly_rate",
+  "overtime_multiplier",
+  "late_penalty_minutes",
+  "column_break_4",
+  "weekend_rate_multiplier",
+  "holiday_rate_multiplier",
+  "currency",
+  "system_settings_section",
+  "enable_logging",
+  "log_retention_days",
+  "enable_backup",
+  "column_break_5",
+  "backup_frequency",
+  "max_concurrent_recognitions",
+  "camera_resolution",
+  "advanced_settings_section",
+  "custom_recognition_params",
+  "integration_settings",
+  "alert_settings",
+  "column_break_6",
+  "maintenance_mode",
+  "debug_mode",
+  "performance_monitoring",
+  "optimization_section",
+  "auto_optimization_enabled",
+  "last_optimization_date",
+  "optimization_frequency",
+  "column_break_7",
+  "min_accuracy_threshold",
+  "performance_benchmark",
+  "system_health_check_interval"
+ ],
+ "fields": [
+  {
+   "fieldname": "recognition_parameters_section",
+   "fieldtype": "Section Break",
+   "label": "Recognition Parameters"
+  },
+  {
+   "fieldname": "recognition_tolerance",
+   "fieldtype": "Float",
+   "label": "Recognition Tolerance",
+   "default": 0.4,
+   "precision": 2,
+   "description": "Lower values = stricter matching (0.3-0.6). Default: 0.4"
+  },
+  {
+   "fieldname": "recognition_model",
+   "fieldtype": "Select",
+   "label": "Recognition Model",
+   "options": "small\nlarge",
+   "default": "large",
+   "description": "Large model = more accurate but slower"
+  },
+  {
+   "fieldname": "num_jitters",
+   "fieldtype": "Int",
+   "label": "Number of Jitters",
+   "default": 100,
+   "description": "Higher values = more accurate but slower (50-150). Default: 100"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "face_detection_model",
+   "fieldtype": "Select",
+   "label": "Face Detection Model",
+   "options": "hog\ncnn",
+   "default": "cnn",
+   "description": "CNN = more accurate but slower, HOG = faster but less accurate"
+  },
+  {
+   "fieldname": "upsample_times",
+   "fieldtype": "Int",
+   "label": "Upsample Times",
+   "default": 2,
+   "description": "Higher values = better detection of small faces (1-3). Default: 2"
+  },
+  {
+   "fieldname": "confidence_threshold",
+   "fieldtype": "Float",
+   "label": "Minimum Confidence Threshold",
+   "default": 70.0,
+   "precision": 1,
+   "description": "Minimum confidence score to accept recognition (0-100). Default: 70.0"
+  },
+  {
+   "fieldname": "performance_settings_section",
+   "fieldtype": "Section Break",
+   "label": "Performance Settings"
+  },
+  {
+   "fieldname": "recognition_cooldown",
+   "fieldtype": "Int",
+   "label": "Recognition Cooldown (ms)",
+   "default": 3000,
+   "description": "Minimum time between recognitions for same person. Default: 3000ms"
+  },
+  {
+   "fieldname": "max_face_images",
+   "fieldtype": "Int",
+   "label": "Max Face Images per Employee",
+   "default": 5,
+   "description": "Maximum number of face images to store per employee"
+  },
+  {
+   "fieldname": "image_quality_threshold",
+   "fieldtype": "Float",
+   "label": "Image Quality Threshold",
+   "default": 0.8,
+   "precision": 2,
+   "description": "Minimum quality score for face images (0.0-1.0)"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "auto_cleanup_days",
+   "fieldtype": "Int",
+   "label": "Auto Cleanup Days",
+   "default": 30,
+   "description": "Days to keep captured face images before cleanup"
+  },
+  {
+   "fieldname": "enable_face_enhancement",
+   "fieldtype": "Check",
+   "label": "Enable Face Enhancement",
+   "default": 1,
+   "description": "Enhance image quality before recognition for better accuracy"
+  },
+  {
+   "fieldname": "enable_anti_spoofing",
+   "fieldtype": "Check",
+   "label": "Enable Anti-Spoofing",
+   "default": 0,
+   "description": "Detect fake faces (photos, videos) - experimental feature"
+  },
+  {
+   "fieldname": "working_hours_section",
+   "fieldtype": "Section Break",
+   "label": "Working Hours Configuration"
+  },
+  {
+   "fieldname": "working_hours_start",
+   "fieldtype": "Time",
+   "label": "Working Hours Start",
+   "default": "09:00:00"
+  },
+  {
+   "fieldname": "working_hours_end",
+   "fieldtype": "Time",
+   "label": "Working Hours End",
+   "default": "18:00:00"
+  },
+  {
+   "fieldname": "late_arrival_threshold",
+   "fieldtype": "Time",
+   "label": "Late Arrival Threshold",
+   "default": "09:30:00",
+   "description": "Time after which arrival is considered late"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "early_departure_threshold",
+   "fieldtype": "Time",
+   "label": "Early Departure Threshold",
+   "default": "17:30:00",
+   "description": "Time before which departure is considered early"
+  },
+  {
+   "fieldname": "lunch_break_hours",
+   "fieldtype": "Float",
+   "label": "Lunch Break Hours",
+   "default": 1.0,
+   "precision": 1,
+   "description": "Standard lunch break duration in hours"
+  },
+  {
+   "fieldname": "standard_working_hours",
+   "fieldtype": "Float",
+   "label": "Standard Working Hours per Day",
+   "default": 8.0,
+   "precision": 1,
+   "description": "Standard working hours per day (excluding lunch)"
+  },
+  {
+   "fieldname": "payroll_integration_section",
+   "fieldtype": "Section Break",
+   "label": "Payroll Integration"
+  },
+  {
+   "fieldname": "default_hourly_rate",
+   "fieldtype": "Currency",
+   "label": "Default Hourly Rate",
+   "default": 50.0,
+   "description": "Default hourly rate for employees without specific rate"
+  },
+  {
+   "fieldname": "overtime_multiplier",
+   "fieldtype": "Float",
+   "label": "Overtime Multiplier",
+   "default": 1.5,
+   "precision": 1,
+   "description": "Multiplier for overtime hours (e.g., 1.5 = 150% of regular rate)"
+  },
+  {
+   "fieldname": "late_penalty_minutes",
+   "fieldtype": "Int",
+   "label": "Late Penalty (minutes)",
+   "default": 30,
+   "description": "Minutes deducted from pay per late arrival"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "weekend_rate_multiplier",
+   "fieldtype": "Float",
+   "label": "Weekend Rate Multiplier",
+   "default": 2.0,
+   "precision": 1,
+   "description": "Rate multiplier for weekend work"
+  },
+  {
+   "fieldname": "holiday_rate_multiplier",
+   "fieldtype": "Float",
+   "label": "Holiday Rate Multiplier",
+   "default": 2.5,
+   "precision": 1,
+   "description": "Rate multiplier for holiday work"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "options": "Currency",
+   "label": "Currency",
+   "default": "INR"
+  },
+  {
+   "fieldname": "system_settings_section",
+   "fieldtype": "Section Break",
+   "label": "System Settings"
+  },
+  {
+   "fieldname": "enable_logging",
+   "fieldtype": "Check",
+   "label": "Enable Detailed Logging",
+   "default": 1,
+   "description": "Enable detailed system logging for debugging"
+  },
+  {
+   "fieldname": "log_retention_days",
+   "fieldtype": "Int",
+   "label": "Log Retention Days",
+   "default": 90,
+   "description": "Days to keep system logs"
+  },
+  {
+   "fieldname": "enable_backup",
+   "fieldtype": "Check",
+   "label": "Enable Automatic Backup",
+   "default": 1,
+   "description": "Enable automatic system backup"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "backup_frequency",
+   "fieldtype": "Select",
+   "label": "Backup Frequency",
+   "options": "Daily\nWeekly\nMonthly",
+   "default": "Weekly",
+   "description": "How often to perform automatic backups"
+  },
+  {
+   "fieldname": "max_concurrent_recognitions",
+   "fieldtype": "Int",
+   "label": "Max Concurrent Recognitions",
+   "default": 2,
+   "description": "Maximum parallel recognition processes"
+  },
+  {
+   "fieldname": "camera_resolution",
+   "fieldtype": "Select",
+   "label": "Default Camera Resolution",
+   "options": "640x480\n1280x720\n1920x1080\nAuto",
+   "default": "1280x720",
+   "description": "Default camera resolution for kiosks"
+  },
+  {
+   "fieldname": "advanced_settings_section",
+   "fieldtype": "Section Break",
+   "label": "Advanced Settings"
+  },
+  {
+   "fieldname": "custom_recognition_params",
+   "fieldtype": "Long Text",
+   "label": "Custom Recognition Parameters",
+   "description": "JSON format for advanced face recognition parameters"
+  },
+  {
+   "fieldname": "integration_settings",
+   "fieldtype": "Long Text",
+   "label": "Integration Settings",
+   "description": "Settings for external system integrations (JSON format)"
+  },
+  {
+   "fieldname": "alert_settings",
+   "fieldtype": "Long Text",
+   "label": "Alert Settings",
+   "description": "Configuration for system alerts and notifications (JSON format)"
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "maintenance_mode",
+   "fieldtype": "Check",
+   "label": "Maintenance Mode",
+   "default": 0,
+   "description": "Put system in maintenance mode"
+  },
+  {
+   "fieldname": "debug_mode",
+   "fieldtype": "Check",
+   "label": "Debug Mode",
+   "default": 0,
+   "description": "Enable debug mode for troubleshooting"
+  },
+  {
+   "fieldname": "performance_monitoring",
+   "fieldtype": "Check",
+   "label": "Performance Monitoring",
+   "default": 1,
+   "description": "Enable system performance monitoring"
+  },
+  {
+   "fieldname": "optimization_section",
+   "fieldtype": "Section Break",
+   "label": "Auto-Optimization"
+  },
+  {
+   "fieldname": "auto_optimization_enabled",
+   "fieldtype": "Check",
+   "label": "Auto Optimization Enabled",
+   "default": 0,
+   "description": "Enable automatic optimization of recognition settings"
+  },
+  {
+   "fieldname": "last_optimization_date",
+   "fieldtype": "Datetime",
+   "label": "Last Optimization Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "optimization_frequency",
+   "fieldtype": "Select",
+   "label": "Optimization Frequency",
+   "options": "Daily\nWeekly\nMonthly",
+   "default": "Weekly",
+   "description": "How often to run auto-optimization"
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "min_accuracy_threshold",
+   "fieldtype": "Float",
+   "label": "Minimum Accuracy Threshold",
+   "default": 85.0,
+   "precision": 1,
+   "description": "Minimum acceptable recognition accuracy percentage"
+  },
+  {
+   "fieldname": "performance_benchmark",
+   "fieldtype": "Float",
+   "label": "Performance Benchmark (seconds)",
+   "default": 3.0,
+   "precision": 1,
+   "description": "Target recognition time in seconds"
+  },
+  {
+   "fieldname": "system_health_check_interval",
+   "fieldtype": "Int",
+   "label": "System Health Check Interval (hours)",
+   "default": 6,
+   "description": "How often to perform system health checks"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-02-12 22:09:42.648983",
+ "modified_by": "Administrator",
+ "module": "Bio Facerecognition",
+ "name": "Face Recognition Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 0,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 0,
+   "write": 0
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

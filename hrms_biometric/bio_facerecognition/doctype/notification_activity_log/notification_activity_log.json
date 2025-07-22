@@ -1,0 +1,263 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-02-12 21:16:41.734387",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "notification_info_section",
+  "employee_id",
+  "employee_name",
+  "event_type",
+  "column_break_1",
+  "timestamp",
+  "notification_status",
+  "priority_level",
+  "delivery_details_section",
+  "successful_notifications",
+  "total_notifications",
+  "failed_notifications",
+  "column_break_2",
+  "delivery_channels",
+  "delivery_time_taken",
+  "retry_attempts",
+  "content_section",
+  "notification_subject",
+  "notification_message",
+  "notifications_data",
+  "column_break_3",
+  "delivery_response",
+  "error_message",
+  "delivery_confirmation",
+  "system_section",
+  "triggered_by",
+  "system_event",
+  "automation_rule",
+  "column_break_4",
+  "correlation_id",
+  "batch_id",
+  "scheduled_time"
+ ],
+ "fields": [
+  {
+   "fieldname": "notification_info_section",
+   "fieldtype": "Section Break",
+   "label": "Notification Information"
+  },
+  {
+   "fieldname": "employee_id",
+   "fieldtype": "Link",
+   "options": "Employee Face Recognition",
+   "in_list_view": 1,
+   "label": "Employee ID",
+   "reqd": 1
+  },
+  {
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "event_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Event Type",
+   "options": "Check In\nCheck Out\nLate Arrival\nMissed Check Out\nOvertime Alert\nWeekly Summary\nSystem Alert\nCustom Message",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "timestamp",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Timestamp",
+   "reqd": 1,
+   "default": "now"
+  },
+  {
+   "fieldname": "notification_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Pending\nSent\nDelivered\nFailed\nPartially Delivered\nRetrying",
+   "default": "Pending",
+   "reqd": 1
+  },
+  {
+   "fieldname": "priority_level",
+   "fieldtype": "Select",
+   "label": "Priority Level",
+   "options": "Low\nNormal\nHigh\nUrgent",
+   "default": "Normal"
+  },
+  {
+   "fieldname": "delivery_details_section",
+   "fieldtype": "Section Break",
+   "label": "Delivery Details"
+  },
+  {
+   "fieldname": "successful_notifications",
+   "fieldtype": "Int",
+   "label": "Successful Notifications",
+   "default": 0
+  },
+  {
+   "fieldname": "total_notifications",
+   "fieldtype": "Int",
+   "label": "Total Notifications",
+   "default": 0
+  },
+  {
+   "fieldname": "failed_notifications",
+   "fieldtype": "Int",
+   "label": "Failed Notifications",
+   "default": 0
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "delivery_channels",
+   "fieldtype": "Data",
+   "label": "Delivery Channels",
+   "description": "Comma-separated list of channels used"
+  },
+  {
+   "fieldname": "delivery_time_taken",
+   "fieldtype": "Float",
+   "label": "Delivery Time Taken (seconds)",
+   "precision": 2
+  },
+  {
+   "fieldname": "retry_attempts",
+   "fieldtype": "Int",
+   "label": "Retry Attempts",
+   "default": 0
+  },
+  {
+   "fieldname": "content_section",
+   "fieldtype": "Section Break",
+   "label": "Notification Content"
+  },
+  {
+   "fieldname": "notification_subject",
+   "fieldtype": "Data",
+   "label": "Subject"
+  },
+  {
+   "fieldname": "notification_message",
+   "fieldtype": "Text",
+   "label": "Message Content"
+  },
+  {
+   "fieldname": "notifications_data",
+   "fieldtype": "Long Text",
+   "label": "Detailed Notifications Data (JSON)"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "delivery_response",
+   "fieldtype": "Long Text",
+   "label": "Delivery Response"
+  },
+  {
+   "fieldname": "error_message",
+   "fieldtype": "Text",
+   "label": "Error Message"
+  },
+  {
+   "fieldname": "delivery_confirmation",
+   "fieldtype": "Check",
+   "label": "Delivery Confirmed",
+   "default": 0
+  },
+  {
+   "fieldname": "system_section",
+   "fieldtype": "Section Break",
+   "label": "System Information"
+  },
+  {
+   "fieldname": "triggered_by",
+   "fieldtype": "Select",
+   "label": "Triggered By",
+   "options": "System Event\nManual\nScheduled\nAPI Call\nAutomation Rule",
+   "default": "System Event"
+  },
+  {
+   "fieldname": "system_event",
+   "fieldtype": "Data",
+   "label": "System Event"
+  },
+  {
+   "fieldname": "automation_rule",
+   "fieldtype": "Data",
+   "label": "Automation Rule"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "correlation_id",
+   "fieldtype": "Data",
+   "label": "Correlation ID"
+  },
+  {
+   "fieldname": "batch_id",
+   "fieldtype": "Data",
+   "label": "Batch ID"
+  },
+  {
+   "fieldname": "scheduled_time",
+   "fieldtype": "Datetime",
+   "label": "Scheduled Time"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-02-12 22:09:42.648983",
+ "modified_by": "Administrator",
+ "module": "Bio Facerecognition",
+ "name": "Notification Activity Log",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 0,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 0,
+   "write": 0
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

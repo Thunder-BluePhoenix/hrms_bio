@@ -1,0 +1,389 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-02-12 21:16:41.734387",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee_section",
+  "employee_id",
+  "employee_name",
+  "department",
+  "column_break_1",
+  "email_address",
+  "mobile_number",
+  "is_active",
+  "notification_preferences_section",
+  "email_enabled",
+  "sms_enabled",
+  "push_enabled",
+  "column_break_2",
+  "whatsapp_enabled",
+  "slack_enabled",
+  "teams_enabled",
+  "timing_preferences_section",
+  "notification_time_start",
+  "notification_time_end",
+  "timezone",
+  "column_break_3",
+  "weekend_notifications",
+  "holiday_notifications",
+  "urgent_only_after_hours",
+  "event_preferences_section",
+  "check_in_notifications",
+  "check_out_notifications",
+  "late_arrival_alerts",
+  "column_break_4",
+  "overtime_notifications",
+  "missed_check_out_alerts",
+  "weekly_summary",
+  "advanced_settings_section",
+  "custom_message_template",
+  "notification_language",
+  "delivery_method_priority",
+  "column_break_5",
+  "escalation_enabled",
+  "escalation_delay_minutes",
+  "max_retry_attempts",
+  "system_info_section",
+  "last_notification_sent",
+  "total_notifications_sent",
+  "failed_notifications",
+  "column_break_6",
+  "device_tokens",
+  "last_updated_by",
+  "preferences_updated_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee_section",
+   "fieldtype": "Section Break",
+   "label": "Employee Information"
+  },
+  {
+   "fieldname": "employee_id",
+   "fieldtype": "Link",
+   "options": "Employee Face Recognition",
+   "in_list_view": 1,
+   "label": "Employee ID",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Data",
+   "label": "Department",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "email_address",
+   "fieldtype": "Data",
+   "label": "Email Address",
+   "read_only": 1
+  },
+  {
+   "fieldname": "mobile_number",
+   "fieldtype": "Data",
+   "label": "Mobile Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Is Active",
+   "default": 1
+  },
+  {
+   "fieldname": "notification_preferences_section",
+   "fieldtype": "Section Break",
+   "label": "Notification Channels"
+  },
+  {
+   "fieldname": "email_enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Email Notifications",
+   "default": 1
+  },
+  {
+   "fieldname": "sms_enabled",
+   "fieldtype": "Check",
+   "label": "SMS Notifications",
+   "default": 0
+  },
+  {
+   "fieldname": "push_enabled",
+   "fieldtype": "Check",
+   "label": "Push Notifications",
+   "default": 0
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "whatsapp_enabled",
+   "fieldtype": "Check",
+   "label": "WhatsApp Notifications",
+   "default": 0
+  },
+  {
+   "fieldname": "slack_enabled",
+   "fieldtype": "Check",
+   "label": "Slack Notifications",
+   "default": 0
+  },
+  {
+   "fieldname": "teams_enabled",
+   "fieldtype": "Check",
+   "label": "Microsoft Teams Notifications",
+   "default": 0
+  },
+  {
+   "fieldname": "timing_preferences_section",
+   "fieldtype": "Section Break",
+   "label": "Timing Preferences"
+  },
+  {
+   "fieldname": "notification_time_start",
+   "fieldtype": "Time",
+   "label": "Notification Start Time",
+   "default": "08:00:00"
+  },
+  {
+   "fieldname": "notification_time_end",
+   "fieldtype": "Time",
+   "label": "Notification End Time",
+   "default": "20:00:00"
+  },
+  {
+   "fieldname": "timezone",
+   "fieldtype": "Select",
+   "label": "Timezone",
+   "options": "Asia/Kolkata\nAmerica/New_York\nEurope/London\nAsia/Tokyo\nAustralia/Sydney\nAmerica/Los_Angeles\nEurope/Berlin",
+   "default": "Asia/Kolkata"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "weekend_notifications",
+   "fieldtype": "Check",
+   "label": "Weekend Notifications",
+   "default": 0
+  },
+  {
+   "fieldname": "holiday_notifications",
+   "fieldtype": "Check",
+   "label": "Holiday Notifications",
+   "default": 0
+  },
+  {
+   "fieldname": "urgent_only_after_hours",
+   "fieldtype": "Check",
+   "label": "Urgent Only After Hours",
+   "default": 1
+  },
+  {
+   "fieldname": "event_preferences_section",
+   "fieldtype": "Section Break",
+   "label": "Event Preferences"
+  },
+  {
+   "fieldname": "check_in_notifications",
+   "fieldtype": "Check",
+   "label": "Check-in Notifications",
+   "default": 1
+  },
+  {
+   "fieldname": "check_out_notifications",
+   "fieldtype": "Check",
+   "label": "Check-out Notifications",
+   "default": 1
+  },
+  {
+   "fieldname": "late_arrival_alerts",
+   "fieldtype": "Check",
+   "label": "Late Arrival Alerts",
+   "default": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "overtime_notifications",
+   "fieldtype": "Check",
+   "label": "Overtime Notifications",
+   "default": 1
+  },
+  {
+   "fieldname": "missed_check_out_alerts",
+   "fieldtype": "Check",
+   "label": "Missed Check-out Alerts",
+   "default": 1
+  },
+  {
+   "fieldname": "weekly_summary",
+   "fieldtype": "Check",
+   "label": "Weekly Summary",
+   "default": 1
+  },
+  {
+   "fieldname": "advanced_settings_section",
+   "fieldtype": "Section Break",
+   "label": "Advanced Settings"
+  },
+  {
+   "fieldname": "custom_message_template",
+   "fieldtype": "Text",
+   "label": "Custom Message Template"
+  },
+  {
+   "fieldname": "notification_language",
+   "fieldtype": "Select",
+   "label": "Notification Language",
+   "options": "English\nHindi\nSpanish\nFrench\nGerman\nChinese\nJapanese",
+   "default": "English"
+  },
+  {
+   "fieldname": "delivery_method_priority",
+   "fieldtype": "Select",
+   "label": "Delivery Method Priority",
+   "options": "Email First\nSMS First\nPush First\nWhatsApp First\nSimultaneous",
+   "default": "Email First"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "escalation_enabled",
+   "fieldtype": "Check",
+   "label": "Escalation Enabled",
+   "default": 0
+  },
+  {
+   "fieldname": "escalation_delay_minutes",
+   "fieldtype": "Int",
+   "label": "Escalation Delay (minutes)",
+   "default": 15
+  },
+  {
+   "fieldname": "max_retry_attempts",
+   "fieldtype": "Int",
+   "label": "Max Retry Attempts",
+   "default": 3
+  },
+  {
+   "fieldname": "system_info_section",
+   "fieldtype": "Section Break",
+   "label": "System Information"
+  },
+  {
+   "fieldname": "last_notification_sent",
+   "fieldtype": "Datetime",
+   "label": "Last Notification Sent",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_notifications_sent",
+   "fieldtype": "Int",
+   "label": "Total Notifications Sent",
+   "default": 0,
+   "read_only": 1
+  },
+  {
+   "fieldname": "failed_notifications",
+   "fieldtype": "Int",
+   "label": "Failed Notifications",
+   "default": 0,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "device_tokens",
+   "fieldtype": "Long Text",
+   "label": "Device Tokens (JSON)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_updated_by",
+   "fieldtype": "Link",
+   "options": "User",
+   "label": "Last Updated By",
+   "read_only": 1
+  },
+  {
+   "fieldname": "preferences_updated_date",
+   "fieldtype": "Datetime",
+   "label": "Preferences Updated Date",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-02-12 22:09:42.648983",
+ "modified_by": "Administrator",
+ "module": "Bio Facerecognition",
+ "name": "Employee Notification Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 0,
+   "delete": 0,
+   "email": 0,
+   "export": 0,
+   "print": 0,
+   "read": 1,
+   "report": 0,
+   "role": "Employee",
+   "share": 0,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

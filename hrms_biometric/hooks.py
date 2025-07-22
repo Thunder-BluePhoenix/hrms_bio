@@ -145,6 +145,24 @@ app_license = "mit"
 # 	}
 # }
 
+doc_events = {
+    "Employee Face Recognition": {
+        "after_insert": "hrms_biometric.bio_facerecognition.api.enhanced_face_recognition.process_face_encoding_on_save",
+        "on_update": "hrms_biometric.bio_facerecognition.api.enhanced_face_recognition.process_face_encoding_on_save"
+    }
+}
+
+# Scheduled Tasks
+# ---------------
+
+scheduler_events = {
+    "daily": [
+        "hrms_biometric.bio_facerecognition.api.enhanced_face_recognition.cleanup_old_attendance_images"
+    ],
+    "weekly": [
+        "hrms_biometric.bio_facerecognition.api.enhanced_face_recognition.generate_attendance_reports"
+    ]
+}
 # Scheduled Tasks
 # ---------------
 

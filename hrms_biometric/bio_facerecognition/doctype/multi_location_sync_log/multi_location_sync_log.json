@@ -1,0 +1,212 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-02-12 21:16:41.734387",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sync_info_section",
+  "sync_date",
+  "sync_time",
+  "initiated_by",
+  "column_break_1",
+  "status",
+  "total_locations",
+  "sync_type",
+  "records_section",
+  "total_records",
+  "synced_records",
+  "failed_records",
+  "column_break_2",
+  "duplicate_records",
+  "conflict_records",
+  "processing_time",
+  "details_section",
+  "sync_summary",
+  "error_log",
+  "affected_locations",
+  "column_break_3",
+  "sync_settings",
+  "next_sync_scheduled",
+  "retry_count"
+ ],
+ "fields": [
+  {
+   "fieldname": "sync_info_section",
+   "fieldtype": "Section Break",
+   "label": "Sync Information"
+  },
+  {
+   "fieldname": "sync_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Sync Date",
+   "reqd": 1,
+   "default": "Today"
+  },
+  {
+   "fieldname": "sync_time",
+   "fieldtype": "Time",
+   "label": "Sync Time",
+   "default": "now"
+  },
+  {
+   "fieldname": "initiated_by",
+   "fieldtype": "Select",
+   "label": "Initiated By",
+   "options": "Manual\nScheduled\nAuto-Trigger\nForced",
+   "default": "Scheduled"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Pending\nIn Progress\nCompleted\nFailed\nPartially Completed",
+   "default": "Pending",
+   "reqd": 1
+  },
+  {
+   "fieldname": "total_locations",
+   "fieldtype": "Int",
+   "label": "Total Locations",
+   "default": 0
+  },
+  {
+   "fieldname": "sync_type",
+   "fieldtype": "Select",
+   "label": "Sync Type",
+   "options": "Full Sync\nIncremental\nConflict Resolution\nBackup Sync",
+   "default": "Incremental"
+  },
+  {
+   "fieldname": "records_section",
+   "fieldtype": "Section Break",
+   "label": "Record Statistics"
+  },
+  {
+   "fieldname": "total_records",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Total Records",
+   "default": 0
+  },
+  {
+   "fieldname": "synced_records",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Synced Records",
+   "default": 0
+  },
+  {
+   "fieldname": "failed_records",
+   "fieldtype": "Int",
+   "label": "Failed Records",
+   "default": 0
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "duplicate_records",
+   "fieldtype": "Int",
+   "label": "Duplicate Records",
+   "default": 0
+  },
+  {
+   "fieldname": "conflict_records",
+   "fieldtype": "Int",
+   "label": "Conflict Records",
+   "default": 0
+  },
+  {
+   "fieldname": "processing_time",
+   "fieldtype": "Float",
+   "label": "Processing Time (seconds)",
+   "precision": 2
+  },
+  {
+   "fieldname": "details_section",
+   "fieldtype": "Section Break",
+   "label": "Sync Details"
+  },
+  {
+   "fieldname": "sync_summary",
+   "fieldtype": "Long Text",
+   "label": "Sync Summary"
+  },
+  {
+   "fieldname": "error_log",
+   "fieldtype": "Long Text",
+   "label": "Error Log"
+  },
+  {
+   "fieldname": "affected_locations",
+   "fieldtype": "Long Text",
+   "label": "Affected Locations (JSON)"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sync_settings",
+   "fieldtype": "Long Text",
+   "label": "Sync Settings (JSON)"
+  },
+  {
+   "fieldname": "next_sync_scheduled",
+   "fieldtype": "Datetime",
+   "label": "Next Sync Scheduled"
+  },
+  {
+   "fieldname": "retry_count",
+   "fieldtype": "Int",
+   "label": "Retry Count",
+   "default": 0
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-02-12 22:09:42.648983",
+ "modified_by": "Administrator",
+ "module": "Bio Facerecognition",
+ "name": "Multi Location Sync Log",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 0,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 0,
+   "write": 0
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

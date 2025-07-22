@@ -1,0 +1,432 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-02-12 21:16:41.734387",
+ "default_view": "List",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "issingle": 1,
+ "field_order": [
+  "api_configuration_section",
+  "whatsapp_provider",
+  "api_url",
+  "api_version",
+  "column_break_1",
+  "api_token",
+  "phone_number_id",
+  "business_account_id",
+  "authentication_section",
+  "access_token",
+  "app_id",
+  "app_secret",
+  "column_break_2",
+  "webhook_verify_token",
+  "webhook_url",
+  "is_enabled",
+  "message_configuration_section",
+  "default_template_language",
+  "message_type_support",
+  "media_support_enabled",
+  "column_break_3",
+  "interactive_messages_enabled",
+  "template_messages_enabled",
+  "max_message_length",
+  "template_management_section",
+  "approved_templates",
+  "template_namespace",
+  "auto_template_sync",
+  "column_break_4",
+  "template_approval_status",
+  "last_template_sync",
+  "template_sync_interval",
+  "delivery_settings_section",
+  "delivery_receipt_enabled",
+  "read_receipt_enabled",
+  "typing_indicator_enabled",
+  "column_break_5",
+  "message_priority",
+  "retry_attempts",
+  "retry_delay_seconds",
+  "rate_limiting_section",
+  "messages_per_second",
+  "daily_message_limit",
+  "monthly_message_limit",
+  "column_break_6",
+  "current_daily_count",
+  "current_monthly_count",
+  "rate_limit_reset_time",
+  "statistics_section",
+  "total_messages_sent",
+  "messages_delivered",
+  "messages_read",
+  "column_break_7",
+  "messages_failed",
+  "last_message_sent",
+  "average_delivery_time",
+  "quality_rating"
+ ],
+ "fields": [
+  {
+   "fieldname": "api_configuration_section",
+   "fieldtype": "Section Break",
+   "label": "API Configuration"
+  },
+  {
+   "fieldname": "whatsapp_provider",
+   "fieldtype": "Select",
+   "label": "WhatsApp Provider",
+   "options": "Meta Business API\nTwilio\nGupshup\n360Dialog\nCustom",
+   "reqd": 1,
+   "default": "Meta Business API"
+  },
+  {
+   "fieldname": "api_url",
+   "fieldtype": "Data",
+   "label": "API URL",
+   "reqd": 1,
+   "default": "https://graph.facebook.com"
+  },
+  {
+   "fieldname": "api_version",
+   "fieldtype": "Data",
+   "label": "API Version",
+   "default": "v18.0"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "api_token",
+   "fieldtype": "Password",
+   "label": "API Token",
+   "reqd": 1
+  },
+  {
+   "fieldname": "phone_number_id",
+   "fieldtype": "Data",
+   "label": "Phone Number ID",
+   "reqd": 1,
+   "description": "WhatsApp Business Phone Number ID"
+  },
+  {
+   "fieldname": "business_account_id",
+   "fieldtype": "Data",
+   "label": "Business Account ID"
+  },
+  {
+   "fieldname": "authentication_section",
+   "fieldtype": "Section Break",
+   "label": "Authentication"
+  },
+  {
+   "fieldname": "access_token",
+   "fieldtype": "Password",
+   "label": "Access Token",
+   "description": "Long-lived access token"
+  },
+  {
+   "fieldname": "app_id",
+   "fieldtype": "Data",
+   "label": "App ID"
+  },
+  {
+   "fieldname": "app_secret",
+   "fieldtype": "Password",
+   "label": "App Secret"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "webhook_verify_token",
+   "fieldtype": "Password",
+   "label": "Webhook Verify Token"
+  },
+  {
+   "fieldname": "webhook_url",
+   "fieldtype": "Data",
+   "label": "Webhook URL"
+  },
+  {
+   "fieldname": "is_enabled",
+   "fieldtype": "Check",
+   "label": "Enable WhatsApp",
+   "default": 0
+  },
+  {
+   "fieldname": "message_configuration_section",
+   "fieldtype": "Section Break",
+   "label": "Message Configuration"
+  },
+  {
+   "fieldname": "default_template_language",
+   "fieldtype": "Select",
+   "label": "Default Template Language",
+   "options": "en\nen_US\nhi\nes\nfr\nde\npt\nit\nja\nko\nzh_CN",
+   "default": "en"
+  },
+  {
+   "fieldname": "message_type_support",
+   "fieldtype": "Select",
+   "label": "Supported Message Types",
+   "options": "Text Only\nText + Media\nAll Types",
+   "default": "Text + Media"
+  },
+  {
+   "fieldname": "media_support_enabled",
+   "fieldtype": "Check",
+   "label": "Media Support Enabled",
+   "default": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "interactive_messages_enabled",
+   "fieldtype": "Check",
+   "label": "Interactive Messages",
+   "default": 0,
+   "description": "Enable buttons and lists"
+  },
+  {
+   "fieldname": "template_messages_enabled",
+   "fieldtype": "Check",
+   "label": "Template Messages",
+   "default": 1,
+   "description": "Enable pre-approved templates"
+  },
+  {
+   "fieldname": "max_message_length",
+   "fieldtype": "Int",
+   "label": "Max Message Length",
+   "default": 4096,
+   "description": "Maximum characters per message"
+  },
+  {
+   "fieldname": "template_management_section",
+   "fieldtype": "Section Break",
+   "label": "Template Management"
+  },
+  {
+   "fieldname": "approved_templates",
+   "fieldtype": "Long Text",
+   "label": "Approved Templates (JSON)",
+   "description": "List of approved message templates"
+  },
+  {
+   "fieldname": "template_namespace",
+   "fieldtype": "Data",
+   "label": "Template Namespace"
+  },
+  {
+   "fieldname": "auto_template_sync",
+   "fieldtype": "Check",
+   "label": "Auto Template Sync",
+   "default": 1,
+   "description": "Automatically sync templates from WhatsApp"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "template_approval_status",
+   "fieldtype": "Select",
+   "label": "Template Approval Status",
+   "options": "Pending\nApproved\nRejected\nIn Review",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_template_sync",
+   "fieldtype": "Datetime",
+   "label": "Last Template Sync",
+   "read_only": 1
+  },
+  {
+   "fieldname": "template_sync_interval",
+   "fieldtype": "Select",
+   "label": "Template Sync Interval",
+   "options": "Manual\nHourly\nDaily\nWeekly",
+   "default": "Daily"
+  },
+  {
+   "fieldname": "delivery_settings_section",
+   "fieldtype": "Section Break",
+   "label": "Delivery Settings"
+  },
+  {
+   "fieldname": "delivery_receipt_enabled",
+   "fieldtype": "Check",
+   "label": "Delivery Receipts",
+   "default": 1
+  },
+  {
+   "fieldname": "read_receipt_enabled",
+   "fieldtype": "Check",
+   "label": "Read Receipts",
+   "default": 1
+  },
+  {
+   "fieldname": "typing_indicator_enabled",
+   "fieldtype": "Check",
+   "label": "Typing Indicators",
+   "default": 0
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "message_priority",
+   "fieldtype": "Select",
+   "label": "Message Priority",
+   "options": "Low\nNormal\nHigh",
+   "default": "Normal"
+  },
+  {
+   "fieldname": "retry_attempts",
+   "fieldtype": "Int",
+   "label": "Retry Attempts",
+   "default": 3
+  },
+  {
+   "fieldname": "retry_delay_seconds",
+   "fieldtype": "Int",
+   "label": "Retry Delay (seconds)",
+   "default": 60
+  },
+  {
+   "fieldname": "rate_limiting_section",
+   "fieldtype": "Section Break",
+   "label": "Rate Limiting"
+  },
+  {
+   "fieldname": "messages_per_second",
+   "fieldtype": "Int",
+   "label": "Messages per Second",
+   "default": 20,
+   "description": "Rate limit for sending messages"
+  },
+  {
+   "fieldname": "daily_message_limit",
+   "fieldtype": "Int",
+   "label": "Daily Message Limit",
+   "default": 1000
+  },
+  {
+   "fieldname": "monthly_message_limit",
+   "fieldtype": "Int",
+   "label": "Monthly Message Limit",
+   "default": 10000
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "current_daily_count",
+   "fieldtype": "Int",
+   "label": "Today's Message Count",
+   "default": 0,
+   "read_only": 1
+  },
+  {
+   "fieldname": "current_monthly_count",
+   "fieldtype": "Int",
+   "label": "This Month's Message Count",
+   "default": 0,
+   "read_only": 1
+  },
+  {
+   "fieldname": "rate_limit_reset_time",
+   "fieldtype": "Datetime",
+   "label": "Rate Limit Reset Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "statistics_section",
+   "fieldtype": "Section Break",
+   "label": "Statistics"
+  },
+  {
+   "fieldname": "total_messages_sent",
+   "fieldtype": "Int",
+   "label": "Total Messages Sent",
+   "default": 0,
+   "read_only": 1
+  },
+  {
+   "fieldname": "messages_delivered",
+   "fieldtype": "Int",
+   "label": "Messages Delivered",
+   "default": 0,
+   "read_only": 1
+  },
+  {
+   "fieldname": "messages_read",
+   "fieldtype": "Int",
+   "label": "Messages Read",
+   "default": 0,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "messages_failed",
+   "fieldtype": "Int",
+   "label": "Messages Failed",
+   "default": 0,
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_message_sent",
+   "fieldtype": "Datetime",
+   "label": "Last Message Sent",
+   "read_only": 1
+  },
+  {
+   "fieldname": "average_delivery_time",
+   "fieldtype": "Float",
+   "label": "Average Delivery Time (seconds)",
+   "precision": 2,
+   "read_only": 1
+  },
+  {
+   "fieldname": "quality_rating",
+   "fieldtype": "Select",
+   "label": "Quality Rating",
+   "options": "Green\nYellow\nRed\nUnknown",
+   "read_only": 1,
+   "description": "WhatsApp Business quality rating"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-02-12 22:09:42.648983",
+ "modified_by": "Administrator",
+ "module": "Bio Facerecognition",
+ "name": "WhatsApp Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

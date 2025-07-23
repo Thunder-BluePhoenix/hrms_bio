@@ -3,21 +3,229 @@ name = "hrms_biometric"
 authors = [
     { name = "BluePhoenix", email = "bluephoenix00995@gmail.com"}
 ]
-description = "Biometrics like face recognition etc"
+description = "Biometric face recognition attendance system for Frappe/ERPNext"
 requires-python = ">=3.10"
 readme = "README.md"
 dynamic = ["version"]
 dependencies = [
-    # "frappe~=15.0.0" # Installed and managed by bench.
+    # Core face recognition dependencies
+    "face-recognition>=1.3.0",
+    "opencv-python>=4.8.0",
+    "opencv-contrib-python>=4.8.0",
+    "numpy>=1.24.0",
+    "Pillow>=10.0.0",
+    
+    # Machine learning and image processing
+    "dlib>=19.24.0",
+    "scikit-image>=0.21.0",
+    "imutils>=0.5.4",
+    
+    # Data processing and analysis
+    "pandas>=2.0.0",
+    "scipy>=1.11.0",
+    
+    # File handling and exports
+    "xlsxwriter>=3.1.0",
+    "openpyxl>=3.1.0",
+    "reportlab>=4.0.0",
+    
+    # HTTP requests and API calls
+    "requests>=2.31.0",
+    "urllib3>=2.0.0",
+    
+    # Date and time handling
+    "python-dateutil>=2.8.0",
+    "pytz>=2023.3",
+    
+    # Image encoding and processing
+    "base64io>=1.0.3",
+    
+    # Performance and caching
+    "redis>=4.5.0",
+    "hiredis>=2.2.0",
+    
+    # Security and hashing
+    "cryptography>=41.0.0",
+    "hashlib-compat>=1.0.1",
+    
+    # Background job processing
+    "celery>=5.3.0",
+    
+    # Notification services
+    "twilio>=8.10.0",
+    "pyfcm>=1.5.4",
+    
+    # Video and camera handling
+    "imageio>=2.31.0",
+    "imageio-ffmpeg>=0.4.8",
+    
+    # Development and testing
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.7.0",
+    "flake8>=6.0.0",
+    
+    # Monitoring and logging
+    "psutil>=5.9.0",
+    "logging-tree>=1.9",
+]
+
+[project.optional-dependencies]
+# GPU acceleration (optional)
+gpu = [
+    "tensorflow>=2.13.0",
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
+]
+
+# Advanced computer vision (optional)
+advanced-cv = [
+    "mediapipe>=0.10.0",
+    "face-alignment>=1.3.5",
+    "mtcnn>=0.1.1",
+]
+
+# Development tools
+dev = [
+    "pre-commit>=3.3.0",
+    "mypy>=1.5.0",
+    "isort>=5.12.0",
+    "coverage>=7.2.0",
+]
+
+# Production deployment
+prod = [
+    "gunicorn>=21.2.0",
+    "gevent>=23.7.0",
+    "supervisor>=4.2.0",
 ]
 
 [build-system]
 requires = ["flit_core >=3.4,<4"]
 build-backend = "flit_core.buildapi"
 
-# These dependencies are only installed when developer mode is enabled
-[tool.bench.dev-dependencies]
-# package_name = "~=1.1.0"
+# System dependencies for different platforms
+[tool.pip.extra-index-url]
+# Add any custom package repositories if needed
+
+[deploy.dependencies.apt]
+# Ubuntu/Debian system packages
+packages = [
+    # Build tools
+    "build-essential",
+    "cmake",
+    "pkg-config",
+    
+    # Image and video libraries
+    "libopencv-dev",
+    "libgl1-mesa-glx",
+    "libglib2.0-0",
+    "libsm6",
+    "libxext6",
+    "libxrender-dev",
+    "libgomp1",
+    
+    # Face recognition dependencies
+    "libboost-all-dev",
+    "libgtk-3-dev",
+    "libavcodec-dev",
+    "libavformat-dev",
+    "libswscale-dev",
+    "libv4l-dev",
+    "libxvidcore-dev",
+    "libx264-dev",
+    
+    # BLAS and LAPACK for numerical computations
+    "libopenblas-dev",
+    "liblapack-dev",
+    "libatlas-base-dev",
+    "gfortran",
+    
+    # Python development headers
+    "python3-dev",
+    "python3-setuptools",
+    
+    # Image format support
+    "libjpeg-dev",
+    "libpng-dev",
+    "libtiff-dev",
+    "libwebp-dev",
+    
+    # Font rendering
+    "libfreetype6-dev",
+    "libharfbuzz-dev",
+    "libfribidi-dev",
+    
+    # System utilities
+    "curl",
+    "wget",
+    "git",
+    "htop",
+]
+
+[deploy.dependencies.yum]
+# CentOS/RHEL/Amazon Linux packages
+packages = [
+    # Build tools
+    "gcc",
+    "gcc-c++",
+    "cmake",
+    "make",
+    
+    # Image and video libraries
+    "opencv-devel",
+    "mesa-libGL",
+    "libSM",
+    "libXext",
+    "libXrender",
+    
+    # Face recognition dependencies
+    "boost-devel",
+    "gtk3-devel",
+    
+    # BLAS and LAPACK
+    "openblas-devel",
+    "lapack-devel",
+    "atlas-devel",
+    
+    # Python development
+    "python3-devel",
+    "python3-setuptools",
+    
+    # Image formats
+    "libjpeg-devel",
+    "libpng-devel",
+    "libtiff-devel",
+    "libwebp-devel",
+    
+    # Font rendering
+    "freetype-devel",
+]
+
+[deploy.dependencies.brew]
+# macOS packages (using Homebrew)
+packages = [
+    # Build tools
+    "cmake",
+    "pkg-config",
+    
+    # Image and video libraries
+    "opencv",
+    "boost",
+    
+    # Face recognition dependencies
+    "dlib",
+    
+    # Image formats
+    "jpeg",
+    "libpng", 
+    "libtiff",
+    "webp",
+    
+    # Font rendering
+    "freetype",
+    "harfbuzz",
+]
 
 [tool.ruff]
 line-length = 110
@@ -25,13 +233,13 @@ target-version = "py310"
 
 [tool.ruff.lint]
 select = [
-    "F",
-    "E",
-    "W",
-    "I",
-    "UP",
-    "B",
-    "RUF",
+    "F",    # Pyflakes
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "I",    # isort
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "RUF",  # Ruff-specific rules
 ]
 ignore = [
     "B017", # assertRaises(Exception) - should be more specific
@@ -54,3 +262,95 @@ typing-modules = ["frappe.types.DF"]
 quote-style = "double"
 indent-style = "tab"
 docstring-code-format = true
+
+[tool.black]
+line-length = 110
+target-version = ['py310']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 110
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
+disallow_untyped_decorators = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = [
+    "hrms_biometric/tests",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+
+[tool.coverage.run]
+source = ["hrms_biometric"]
+omit = [
+    "*/tests/*",
+    "*/migrations/*",
+    "setup.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+# Performance optimization settings
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["hrms_biometric*"]
+exclude = ["tests*"]
+
+# Documentation configuration
+[tool.sphinx]
+source-dir = "docs"
+build-dir = "docs/_build"
+
+# Security scanning
+[tool.bandit]
+exclude_dirs = ["tests", "migrations"]
+skips = ["B101", "B601"]

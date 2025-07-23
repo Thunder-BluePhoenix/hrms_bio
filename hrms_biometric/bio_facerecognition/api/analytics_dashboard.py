@@ -1,8 +1,18 @@
 import frappe
 from frappe import _
+from frappe.utils import get_dates_between, getdate, add_days
 from datetime import datetime, timedelta
 import json
 import calendar
+import io
+import csv
+import base64
+
+# Add these imports for Excel export
+try:
+    import xlsxwriter
+except ImportError:
+    xlsxwriter = None
 
 @frappe.whitelist()
 def get_attendance_analytics(period="monthly", start_date=None, end_date=None):
@@ -247,8 +257,8 @@ def get_employee_attendance_patterns(start_date, end_date):
         """, (start_date, end_date), as_dict=True)
         
         # Calculate additional pattern metrics
-        total_working_days = len([d for d in frappe.utils.get_dates_between(start_date, end_date) 
-                                 if datetime.strptime(str(d), "%Y-%m-%d").weekday() < 5])  # Weekdays only
+        total_working_days = len([d for d in get_dates_between(start_date, end_date) 
+                                 if getdate(d).weekday() < 5])  # Weekdays only
         
         for pattern in patterns:
             pattern["attendance_rate"] = round(
@@ -431,6 +441,156 @@ def generate_attendance_report(report_type="comprehensive", start_date=None, end
     except Exception as e:
         frappe.log_error(f"Report generation error: {str(e)}")
         return {"success": False, "message": str(e)}
+
+def generate_employee_performance_report(start_date, end_date, filters):
+    """Generate detailed employee performance report"""
+    try:
+        department_filter = ""
+        filter_values = [start_date, end_date]
+        
+        if filters.get("department"):
+            department_filter = "AND department = %s"
+            filter_values.append(filters["department"])
+        
+        employee_performance = frappe.db.sql(f"""
+            SELECT 
+                employee_id,
+                employee_name,
+                department,
+                COUNT(DISTINCT attendance_date) as total_days,
+                AVG(total_hours) as avg_hours_per_day,
+                SUM(total_hours) as total_hours_worked,
+                MIN(TIME(check_in_time)) as earliest_check_in,
+                MAX(TIME(check_out_time)) as latest_check_out,
+                SUM(CASE WHEN TIME(check_in_time) > '09:30:00' THEN 1 ELSE 0 END) as late_days,
+                SUM(CASE WHEN total_hours > 9 THEN 1 ELSE 0 END) as overtime_days,
+                AVG(confidence_score) as avg_recognition_score,
+                COUNT(CASE WHEN verification_status = 'Failed' THEN 1 END) as failed_recognitions
+            FROM `tabEmployee Attendance`
+            WHERE attendance_date BETWEEN %s AND %s
+            AND docstatus = 1
+            {department_filter}
+            GROUP BY employee_id
+            ORDER BY total_hours_worked DESC
+        """, filter_values, as_dict=True)
+        
+        # Calculate performance metrics
+        for emp in employee_performance:
+            working_days = len([d for d in get_dates_between(start_date, end_date) 
+                               if getdate(d).weekday() < 5])
+            
+            emp["attendance_percentage"] = round((emp["total_days"] / working_days) * 100, 2) if working_days > 0 else 0
+            emp["punctuality_rate"] = round(((emp["total_days"] - emp["late_days"]) / emp["total_days"]) * 100, 2) if emp["total_days"] > 0 else 0
+            emp["overtime_frequency"] = round((emp["overtime_days"] / emp["total_days"]) * 100, 2) if emp["total_days"] > 0 else 0
+            emp["avg_hours_per_day"] = round(emp["avg_hours_per_day"] or 0, 2)
+            emp["total_hours_worked"] = round(emp["total_hours_worked"] or 0, 2)
+            emp["avg_recognition_score"] = round(emp["avg_recognition_score"] or 0, 2)
+        
+        return {
+            "employee_details": employee_performance,
+            "summary": {
+                "total_employees": len(employee_performance),
+                "avg_attendance_rate": round(sum([e["attendance_percentage"] for e in employee_performance]) / len(employee_performance), 2) if employee_performance else 0,
+                "avg_punctuality_rate": round(sum([e["punctuality_rate"] for e in employee_performance]) / len(employee_performance), 2) if employee_performance else 0,
+                "total_hours_all_employees": sum([e["total_hours_worked"] for e in employee_performance])
+            }
+        }
+        
+    except Exception as e:
+        frappe.log_error(f"Employee performance report error: {str(e)}")
+        return {}
+
+def generate_operational_insights(start_date, end_date, filters):
+    """Generate operational insights and recommendations"""
+    try:
+        # System utilization metrics
+        system_stats = frappe.db.sql("""
+            SELECT 
+                COUNT(DISTINCT kiosk_location) as active_locations,
+                COUNT(*) as total_transactions,
+                AVG(confidence_score) as avg_system_confidence,
+                COUNT(CASE WHEN verification_status = 'Failed' THEN 1 END) as system_failures,
+                COUNT(DISTINCT DATE(attendance_date)) as active_days
+            FROM `tabEmployee Attendance`
+            WHERE attendance_date BETWEEN %s AND %s
+            AND docstatus = 1
+        """, (start_date, end_date), as_dict=True)[0]
+        
+        # Peak usage analysis
+        peak_usage = frappe.db.sql("""
+            SELECT 
+                HOUR(creation) as hour,
+                COUNT(*) as transaction_count
+            FROM `tabEmployee Attendance`
+            WHERE attendance_date BETWEEN %s AND %s
+            AND docstatus = 1
+            GROUP BY HOUR(creation)
+            ORDER BY transaction_count DESC
+            LIMIT 5
+        """, (start_date, end_date), as_dict=True)
+        
+        # Error analysis
+        error_patterns = frappe.db.sql("""
+            SELECT 
+                kiosk_location,
+                COUNT(CASE WHEN verification_status = 'Failed' THEN 1 END) as failure_count,
+                COUNT(*) as total_attempts,
+                ROUND((COUNT(CASE WHEN verification_status = 'Failed' THEN 1 END) / COUNT(*)) * 100, 2) as failure_rate
+            FROM `tabEmployee Attendance`
+            WHERE attendance_date BETWEEN %s AND %s
+            GROUP BY kiosk_location
+            HAVING failure_count > 0
+            ORDER BY failure_rate DESC
+        """, (start_date, end_date), as_dict=True)
+        
+        # Generate recommendations
+        recommendations = []
+        
+        if system_stats["avg_system_confidence"] < 85:
+            recommendations.append({
+                "category": "Technical",
+                "priority": "High",
+                "issue": "Low recognition confidence",
+                "recommendation": "Update employee face images and recalibrate recognition system"
+            })
+        
+        failure_rate = (system_stats["system_failures"] / system_stats["total_transactions"]) * 100 if system_stats["total_transactions"] > 0 else 0
+        if failure_rate > 5:
+            recommendations.append({
+                "category": "System Performance",
+                "priority": "Medium",
+                "issue": f"High failure rate: {failure_rate:.2f}%",
+                "recommendation": "Investigate hardware issues and improve lighting conditions"
+            })
+        
+        # Check for locations with high failure rates
+        for location in error_patterns:
+            if location["failure_rate"] > 10:
+                recommendations.append({
+                    "category": "Location Specific",
+                    "priority": "Medium",
+                    "issue": f"High failure rate at {location['kiosk_location']}: {location['failure_rate']}%",
+                    "recommendation": f"Inspect hardware and environmental conditions at {location['kiosk_location']}"
+                })
+        
+        return {
+            "system_performance": {
+                "utilization_stats": system_stats,
+                "peak_hours": peak_usage,
+                "error_analysis": error_patterns,
+                "overall_success_rate": round(100 - failure_rate, 2)
+            },
+            "recommendations": recommendations,
+            "operational_metrics": {
+                "avg_transactions_per_day": round(system_stats["total_transactions"] / system_stats["active_days"], 2) if system_stats["active_days"] > 0 else 0,
+                "system_uptime": round((system_stats["active_days"] / len(get_dates_between(start_date, end_date))) * 100, 2),
+                "location_coverage": system_stats["active_locations"]
+            }
+        }
+        
+    except Exception as e:
+        frappe.log_error(f"Operational insights error: {str(e)}")
+        return {}
 
 def generate_executive_summary(start_date, end_date, filters):
     """Generate executive summary for attendance"""
@@ -646,12 +806,190 @@ def export_analytics_data(format_type="excel", analytics_data=None):
         frappe.log_error(f"Analytics export error: {str(e)}")
         return {"success": False, "message": str(e)}
 
+def export_to_csv(analytics_data):
+    """Export analytics to CSV format"""
+    try:
+        output = io.StringIO()
+        
+        # Export daily trends
+        if analytics_data.get("daily_trends"):
+            output.write("Daily Attendance Trends\n")
+            output.write("Date,Unique Employees,Check-ins,Check-outs,Attendance %,Avg Confidence\n")
+            
+            for trend in analytics_data["daily_trends"]:
+                output.write(f"{trend.get('date', '')},{trend.get('unique_employees', 0)},{trend.get('check_ins', 0)},{trend.get('check_outs', 0)},{trend.get('attendance_percentage', 0)},{trend.get('avg_confidence', 0)}\n")
+            
+            output.write("\n")
+        
+        # Export department stats
+        if analytics_data.get("department_stats"):
+            output.write("Department Statistics\n")
+            output.write("Department,Employees,Total Records,Avg Confidence,Late Arrivals,Punctuality %\n")
+            
+            for dept in analytics_data["department_stats"]:
+                output.write(f"{dept.get('department', '')},{dept.get('unique_employees', 0)},{dept.get('total_records', 0)},{dept.get('avg_confidence', 0)},{dept.get('late_arrivals', 0)},{dept.get('punctuality_rate', 0)}\n")
+        
+        csv_content = output.getvalue()
+        output.close()
+        
+        # Save as file
+        file_doc = frappe.get_doc({
+            "doctype": "File",
+            "file_name": f"attendance_analytics_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+            "content": csv_content.encode(),
+            "is_private": 1
+        })
+        file_doc.insert()
+        
+        return {
+            "success": True,
+            "file_url": file_doc.file_url,
+            "format": "csv"
+        }
+        
+    except Exception as e:
+        frappe.log_error(f"CSV export error: {str(e)}")
+        return {"success": False, "message": str(e)}
+
+def export_to_json(analytics_data):
+    """Export analytics to JSON format"""
+    try:
+        json_content = json.dumps(analytics_data, indent=2, default=str)
+        
+        # Save as file
+        file_doc = frappe.get_doc({
+            "doctype": "File",
+            "file_name": f"attendance_analytics_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+            "content": json_content.encode(),
+            "is_private": 1
+        })
+        file_doc.insert()
+        
+        return {
+            "success": True,
+            "file_url": file_doc.file_url,
+            "format": "json"
+        }
+        
+    except Exception as e:
+        frappe.log_error(f"JSON export error: {str(e)}")
+        return {"success": False, "message": str(e)}
+
+def export_to_pdf(analytics_data):
+    """Export analytics to PDF format"""
+    try:
+        # This would require a PDF library like ReportLab
+        # For now, return a placeholder
+        html_content = generate_analytics_html_report(analytics_data)
+        
+        # Convert HTML to PDF using frappe's built-in PDF generation
+        from frappe.utils.pdf import get_pdf
+        
+        pdf_content = get_pdf(html_content)
+        
+        # Save as file
+        file_doc = frappe.get_doc({
+            "doctype": "File",
+            "file_name": f"attendance_analytics_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+            "content": pdf_content,
+            "is_private": 1
+        })
+        file_doc.insert()
+        
+        return {
+            "success": True,
+            "file_url": file_doc.file_url,
+            "format": "pdf"
+        }
+        
+    except Exception as e:
+        frappe.log_error(f"PDF export error: {str(e)}")
+        return {"success": False, "message": str(e)}
+
+def generate_analytics_html_report(analytics_data):
+    """Generate HTML report for PDF conversion"""
+    html = """
+    <html>
+    <head>
+        <title>Attendance Analytics Report</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            h1, h2 { color: #333; }
+            table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; }
+        </style>
+    </head>
+    <body>
+        <h1>Attendance Analytics Report</h1>
+        <p>Generated on: """ + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + """</p>
+    """
+    
+    # Add daily trends table
+    if analytics_data.get("daily_trends"):
+        html += """
+        <h2>Daily Attendance Trends</h2>
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Unique Employees</th>
+                <th>Check-ins</th>
+                <th>Check-outs</th>
+                <th>Attendance %</th>
+            </tr>
+        """
+        
+        for trend in analytics_data["daily_trends"]:
+            html += f"""
+            <tr>
+                <td>{trend.get('date', '')}</td>
+                <td>{trend.get('unique_employees', 0)}</td>
+                <td>{trend.get('check_ins', 0)}</td>
+                <td>{trend.get('check_outs', 0)}</td>
+                <td>{trend.get('attendance_percentage', 0)}%</td>
+            </tr>
+            """
+        
+        html += "</table>"
+    
+    # Add department stats
+    if analytics_data.get("department_stats"):
+        html += """
+        <h2>Department Statistics</h2>
+        <table>
+            <tr>
+                <th>Department</th>
+                <th>Employees</th>
+                <th>Total Records</th>
+                <th>Punctuality Rate</th>
+            </tr>
+        """
+        
+        for dept in analytics_data["department_stats"]:
+            html += f"""
+            <tr>
+                <td>{dept.get('department', '')}</td>
+                <td>{dept.get('unique_employees', 0)}</td>
+                <td>{dept.get('total_records', 0)}</td>
+                <td>{dept.get('punctuality_rate', 0)}%</td>
+            </tr>
+            """
+        
+        html += "</table>"
+    
+    html += """
+    </body>
+    </html>
+    """
+    
+    return html
+
 def export_to_excel(analytics_data):
     """Export analytics to Excel format"""
     try:
-        import xlsxwriter
-        import io
-        
+        if not xlsxwriter:
+            return {"success": False, "message": "xlsxwriter library not available"}
+            
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output)
         

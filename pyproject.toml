@@ -1,356 +1,163 @@
 [project]
 name = "hrms_biometric"
+version = "0.0.1"
 authors = [
     { name = "BluePhoenix", email = "bluephoenix00995@gmail.com"}
 ]
 description = "Biometric face recognition attendance system for Frappe/ERPNext"
 requires-python = ">=3.10"
 readme = "README.md"
-dynamic = ["version"]
+license = {text = "MIT"}
+keywords = ["frappe", "erpnext", "biometric", "face-recognition", "attendance"]
+
+# Core dependencies - only essential ones
 dependencies = [
-    # Core face recognition dependencies
-    "face-recognition>=1.3.0",
-    "opencv-python>=4.8.0",
-    "opencv-contrib-python>=4.8.0",
-    "numpy>=1.24.0",
-    "Pillow>=10.0.0",
+    # Core face recognition - with version constraints for stability
+    "face-recognition>=1.3.0,<2.0.0",
+    "opencv-python>=4.8.0,<5.0.0",
+    "numpy>=1.24.0,<2.0.0",
+    "Pillow>=10.0.0,<11.0.0",
     
-    # Machine learning and image processing
-    "dlib>=19.24.0",
-    "scikit-image>=0.21.0",
-    "imutils>=0.5.4",
+    # Data processing
+    "pandas>=2.0.0,<3.0.0",
     
-    # Data processing and analysis
-    "pandas>=2.0.0",
-    "scipy>=1.11.0",
+    # File handling
+    "xlsxwriter>=3.1.0,<4.0.0",
     
-    # File handling and exports
-    "xlsxwriter>=3.1.0",
-    "openpyxl>=3.1.0",
-    "reportlab>=4.0.0",
+    # HTTP requests
+    "requests>=2.31.0,<3.0.0",
     
-    # HTTP requests and API calls
-    "requests>=2.31.0",
-    "urllib3>=2.0.0",
+    # Date handling
+    "python-dateutil>=2.8.0,<3.0.0",
     
-    # Date and time handling
-    "python-dateutil>=2.8.0",
-    "pytz>=2023.3",
-    
-    # Image encoding and processing
-    "base64io>=1.0.3",
-    
-    # Performance and caching
-    "redis>=4.5.0",
-    "hiredis>=2.2.0",
-    
-    # Security and hashing
-    "cryptography>=41.0.0",
-    "hashlib-compat>=1.0.1",
-    
-    # Background job processing
-    "celery>=5.3.0",
-    
-    # Notification services
-    "twilio>=8.10.0",
-    "pyfcm>=1.5.4",
-    
-    # Video and camera handling
-    "imageio>=2.31.0",
-    "imageio-ffmpeg>=0.4.8",
-    
-    # Development and testing
-    "pytest>=7.4.0",
-    "pytest-cov>=4.1.0",
-    "black>=23.7.0",
-    "flake8>=6.0.0",
-    
-    # Monitoring and logging
-    "psutil>=5.9.0",
-    "logging-tree>=1.9",
+    # System monitoring
+    "psutil>=5.9.0,<6.0.0",
 ]
 
 [project.optional-dependencies]
-# GPU acceleration (optional)
-gpu = [
-    "tensorflow>=2.13.0",
-    "torch>=2.0.0",
-    "torchvision>=0.15.0",
-]
-
-# Advanced computer vision (optional)
-advanced-cv = [
-    "mediapipe>=0.10.0",
-    "face-alignment>=1.3.5",
-    "mtcnn>=0.1.1",
-]
-
-# Development tools
+# Development tools (install with: pip install -e .[dev])
 dev = [
+    "pytest>=7.4.0",
+    "black>=23.7.0", 
+    "ruff>=0.1.0",
     "pre-commit>=3.3.0",
-    "mypy>=1.5.0",
-    "isort>=5.12.0",
-    "coverage>=7.2.0",
 ]
 
-# Production deployment
-prod = [
-    "gunicorn>=21.2.0",
-    "gevent>=23.7.0",
-    "supervisor>=4.2.0",
+# Advanced computer vision (install with: pip install -e .[advanced])  
+advanced = [
+    "dlib>=19.24.0,<20.0.0",
+    "opencv-contrib-python>=4.8.0,<5.0.0",
+    "mediapipe>=0.10.0,<1.0.0",
+    "scikit-image>=0.21.0,<1.0.0",
 ]
+
+# Full installation (install with: pip install -e .[full])
+full = [
+    "dlib>=19.24.0,<20.0.0",
+    "opencv-contrib-python>=4.8.0,<5.0.0",
+    "mediapipe>=0.10.0,<1.0.0", 
+    "scikit-image>=0.21.0,<1.0.0",
+    "scipy>=1.11.0,<2.0.0",
+    "openpyxl>=3.1.0,<4.0.0",
+    "reportlab>=4.0.0,<5.0.0",
+    "redis>=4.5.0,<6.0.0",
+    "celery>=5.3.0,<6.0.0",
+    "twilio>=8.10.0,<9.0.0",
+    "imageio>=2.31.0,<3.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Thunder-BluePhoenix/hrms_bio"
+Repository = "https://github.com/Thunder-BluePhoenix/hrms_bio.git"
+"Bug Tracker" = "https://github.com/Thunder-BluePhoenix/hrms_bio/issues"
 
 [build-system]
-requires = ["flit_core >=3.4,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["setuptools>=61.0", "wheel>=0.37.0"]
+build-backend = "setuptools.build_meta"
 
-# System dependencies for different platforms
-[tool.pip.extra-index-url]
-# Add any custom package repositories if needed
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["hrms_biometric*"]
+exclude = ["tests*", "*.tests*", "node_modules*"]
 
-[deploy.dependencies.apt]
-# Ubuntu/Debian system packages
-packages = [
-    # Build tools
-    "build-essential",
-    "cmake",
-    "pkg-config",
-    
-    # Image and video libraries
-    "libopencv-dev",
-    "libgl1-mesa-glx",
-    "libglib2.0-0",
-    "libsm6",
-    "libxext6",
-    "libxrender-dev",
-    "libgomp1",
-    
-    # Face recognition dependencies
-    "libboost-all-dev",
-    "libgtk-3-dev",
-    "libavcodec-dev",
-    "libavformat-dev",
-    "libswscale-dev",
-    "libv4l-dev",
-    "libxvidcore-dev",
-    "libx264-dev",
-    
-    # BLAS and LAPACK for numerical computations
-    "libopenblas-dev",
-    "liblapack-dev",
-    "libatlas-base-dev",
-    "gfortran",
-    
-    # Python development headers
-    "python3-dev",
-    "python3-setuptools",
-    
-    # Image format support
-    "libjpeg-dev",
-    "libpng-dev",
-    "libtiff-dev",
-    "libwebp-dev",
-    
-    # Font rendering
-    "libfreetype6-dev",
-    "libharfbuzz-dev",
-    "libfribidi-dev",
-    
-    # System utilities
-    "curl",
-    "wget",
-    "git",
-    "htop",
-]
-
-[deploy.dependencies.yum]
-# CentOS/RHEL/Amazon Linux packages
-packages = [
-    # Build tools
-    "gcc",
-    "gcc-c++",
-    "cmake",
-    "make",
-    
-    # Image and video libraries
-    "opencv-devel",
-    "mesa-libGL",
-    "libSM",
-    "libXext",
-    "libXrender",
-    
-    # Face recognition dependencies
-    "boost-devel",
-    "gtk3-devel",
-    
-    # BLAS and LAPACK
-    "openblas-devel",
-    "lapack-devel",
-    "atlas-devel",
-    
-    # Python development
-    "python3-devel",
-    "python3-setuptools",
-    
-    # Image formats
-    "libjpeg-devel",
-    "libpng-devel",
-    "libtiff-devel",
-    "libwebp-devel",
-    
-    # Font rendering
-    "freetype-devel",
-]
-
-[deploy.dependencies.brew]
-# macOS packages (using Homebrew)
-packages = [
-    # Build tools
-    "cmake",
-    "pkg-config",
-    
-    # Image and video libraries
-    "opencv",
-    "boost",
-    
-    # Face recognition dependencies
-    "dlib",
-    
-    # Image formats
-    "jpeg",
-    "libpng", 
-    "libtiff",
-    "webp",
-    
-    # Font rendering
-    "freetype",
-    "harfbuzz",
-]
-
+# Ruff configuration (Python linting)
 [tool.ruff]
 line-length = 110
 target-version = "py310"
+extend-exclude = [
+    "migrations",
+    "*.egg-info", 
+    "build",
+    "dist",
+    "__pycache__",
+]
 
 [tool.ruff.lint]
-select = [
-    "F",    # Pyflakes
-    "E",    # pycodestyle errors
-    "W",    # pycodestyle warnings
-    "I",    # isort
-    "UP",   # pyupgrade
-    "B",    # flake8-bugbear
-    "RUF",  # Ruff-specific rules
-]
+select = ["F", "E", "W", "I", "UP", "B"]
 ignore = [
-    "B017", # assertRaises(Exception) - should be more specific
-    "B018", # useless expression, not assigned to anything
-    "B023", # function doesn't bind loop variable - will have last iteration's value
-    "B904", # raise inside except without from
-    "E101", # indentation contains mixed spaces and tabs
-    "E402", # module level import not at top of file
-    "E501", # line too long
-    "E741", # ambiguous variable name
-    "F401", # "unused" imports
-    "F403", # can't detect undefined names from * import
-    "F405", # can't detect undefined names from * import
-    "F722", # syntax error in forward type annotation
-    "W191", # indentation contains tabs
+    "E501", # line too long (handled by formatter)
+    "F401", # unused imports (common in __init__.py)
+    "B018", # useless expression
 ]
-typing-modules = ["frappe.types.DF"]
 
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "tab"
-docstring-code-format = true
-
+# Black configuration (Python formatting)
 [tool.black]
 line-length = 110
 target-version = ['py310']
 include = '\.pyi?$'
 extend-exclude = '''
 /(
-  # directories
   \.eggs
   | \.git
-  | \.hg
   | \.mypy_cache
   | \.tox
   | \.venv
   | build
   | dist
+  | migrations
 )/
 '''
 
-[tool.isort]
-profile = "black"
-line_length = 110
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-use_parentheses = true
-ensure_newline_before_comments = true
-
-[tool.mypy]
-python_version = "3.10"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = false
-disallow_incomplete_defs = false
-check_untyped_defs = true
-disallow_untyped_decorators = false
-no_implicit_optional = true
-warn_redundant_casts = true
-warn_unused_ignores = true
-warn_no_return = true
-warn_unreachable = true
-strict_equality = true
-
+# Pytest configuration (testing)
 [tool.pytest.ini_options]
 minversion = "7.0"
-addopts = "-ra -q --strict-markers --strict-config"
-testpaths = [
-    "hrms_biometric/tests",
-]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+addopts = ["-ra", "-q", "--strict-markers"]
 markers = [
-    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
-    "integration: marks tests as integration tests",
+    "slow: marks tests as slow",
+    "integration: marks tests as integration tests", 
     "unit: marks tests as unit tests",
 ]
 
+# Coverage configuration
 [tool.coverage.run]
 source = ["hrms_biometric"]
 omit = [
     "*/tests/*",
-    "*/migrations/*",
-    "setup.py",
+    "*/migrations/*", 
+    "*/__pycache__/*",
 ]
 
 [tool.coverage.report]
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",
-    "if self.debug:",
-    "if settings.DEBUG",
     "raise AssertionError",
     "raise NotImplementedError",
-    "if 0:",
     "if __name__ == .__main__.:",
-    "class .*\\bProtocol\\):",
-    "@(abc\\.)?abstractmethod",
 ]
 
-# Performance optimization settings
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["hrms_biometric*"]
-exclude = ["tests*"]
+# MyPy configuration (type checking)
+[tool.mypy]
+python_version = "3.10" 
+warn_return_any = false
+warn_unused_configs = true
+ignore_missing_imports = true
+exclude = ["migrations/", "build/", "dist/"]
 
-# Documentation configuration
-[tool.sphinx]
-source-dir = "docs"
-build-dir = "docs/_build"
-
-# Security scanning
-[tool.bandit]
-exclude_dirs = ["tests", "migrations"]
-skips = ["B101", "B601"]
+# Frappe-specific settings
+[tool.frappe]
+app_name = "hrms_biometric"
+app_title = "HRMS Biometric"
+app_publisher = "BluePhoenix"

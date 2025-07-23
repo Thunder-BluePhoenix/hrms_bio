@@ -1,0 +1,29 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+include *.yml
+include *.yaml
+
+recursive-include hrms_biometric *.css
+recursive-include hrms_biometric *.csv
+recursive-include hrms_biometric *.html
+recursive-include hrms_biometric *.ico
+recursive-include hrms_biometric *.js
+recursive-include hrms_biometric *.json
+recursive-include hrms_biometric *.md
+recursive-include hrms_biometric *.png
+recursive-include hrms_biometric *.py
+recursive-include hrms_biometric *.svg
+recursive-include hrms_biometric *.txt
+recursive-include hrms_biometric *.xml
+recursive-include hrms_biometric *.yml
+
+recursive-exclude hrms_biometric *.pyc
+recursive-exclude hrms_biometric __pycache__
+recursive-exclude hrms_biometric .DS_Store
+recursive-exclude hrms_biometric *.swp
+recursive-exclude hrms_biometric *.swo
+recursive-exclude hrms_biometric *~

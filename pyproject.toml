@@ -10,32 +10,20 @@ readme = "README.md"
 license = {text = "MIT"}
 keywords = ["frappe", "erpnext", "biometric", "face-recognition", "attendance"]
 
-# Core dependencies - only essential ones
+# Core dependencies
 dependencies = [
-    # Core face recognition - with version constraints for stability
     "face-recognition>=1.3.0,<2.0.0",
     "opencv-python>=4.8.0,<5.0.0",
     "numpy>=1.24.0,<2.0.0",
     "Pillow>=10.0.0,<11.0.0",
-    
-    # Data processing
     "pandas>=2.0.0,<3.0.0",
-    
-    # File handling
     "xlsxwriter>=3.1.0,<4.0.0",
-    
-    # HTTP requests
     "requests>=2.31.0,<3.0.0",
-    
-    # Date handling
     "python-dateutil>=2.8.0,<3.0.0",
-    
-    # System monitoring
     "psutil>=5.9.0,<6.0.0",
 ]
 
 [project.optional-dependencies]
-# Development tools (install with: pip install -e .[dev])
 dev = [
     "pytest>=7.4.0",
     "black>=23.7.0", 
@@ -43,7 +31,6 @@ dev = [
     "pre-commit>=3.3.0",
 ]
 
-# Advanced computer vision (install with: pip install -e .[advanced])  
 advanced = [
     "dlib>=19.24.0,<20.0.0",
     "opencv-contrib-python>=4.8.0,<5.0.0",
@@ -51,7 +38,6 @@ advanced = [
     "scikit-image>=0.21.0,<1.0.0",
 ]
 
-# Full installation (install with: pip install -e .[full])
 full = [
     "dlib>=19.24.0,<20.0.0",
     "opencv-contrib-python>=4.8.0,<5.0.0",
@@ -98,7 +84,15 @@ ignore = [
     "E501", # line too long (handled by formatter)
     "F401", # unused imports (common in __init__.py)
     "B018", # useless expression
+    "F403", # unable to detect undefined names from * import
+    "F405", # can't detect undefined names from * import
 ]
+typing-modules = ["frappe.types.DF"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "tab"
+docstring-code-format = true
 
 # Black configuration (Python formatting)
 [tool.black]
@@ -121,7 +115,7 @@ extend-exclude = '''
 # Pytest configuration (testing)
 [tool.pytest.ini_options]
 minversion = "7.0"
-testpaths = ["tests"]
+testpaths = ["hrms_biometric/tests"]
 python_files = ["test_*.py", "*_test.py"]
 addopts = ["-ra", "-q", "--strict-markers"]
 markers = [
@@ -137,6 +131,7 @@ omit = [
     "*/tests/*",
     "*/migrations/*", 
     "*/__pycache__/*",
+    "setup.py",
 ]
 
 [tool.coverage.report]

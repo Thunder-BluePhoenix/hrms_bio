@@ -10,7 +10,7 @@ readme = "README.md"
 license = {text = "MIT"}
 keywords = ["frappe", "erpnext", "biometric", "face-recognition", "attendance"]
 
-# Core dependencies
+# Core Python dependencies
 dependencies = [
     "face-recognition>=1.3.0,<2.0.0",
     "opencv-python>=4.8.0,<5.0.0",
@@ -26,7 +26,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest>=7.4.0",
-    "black>=23.7.0", 
+    "black>=23.7.0",
     "ruff>=0.1.0",
     "pre-commit>=3.3.0",
 ]
@@ -41,7 +41,7 @@ advanced = [
 full = [
     "dlib>=19.24.0,<20.0.0",
     "opencv-contrib-python>=4.8.0,<5.0.0",
-    "mediapipe>=0.10.0,<1.0.0", 
+    "mediapipe>=0.10.0,<1.0.0",
     "scikit-image>=0.21.0,<1.0.0",
     "scipy>=1.11.0,<2.0.0",
     "openpyxl>=3.1.0,<4.0.0",
@@ -57,22 +57,39 @@ Homepage = "https://github.com/Thunder-BluePhoenix/hrms_bio"
 Repository = "https://github.com/Thunder-BluePhoenix/hrms_bio.git"
 "Bug Tracker" = "https://github.com/Thunder-BluePhoenix/hrms_bio/issues"
 
+# Build system using setuptools (retained)
 [build-system]
 requires = ["setuptools>=61.0", "wheel>=0.37.0"]
 build-backend = "setuptools.build_meta"
 
+# Package discovery
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["hrms_biometric*"]
 exclude = ["tests*", "*.tests*", "node_modules*"]
 
-# Ruff configuration (Python linting)
+# APT dependencies (NEW - Required for face-recognition, dlib)
+[deploy.dependencies.apt]
+packages = [
+  "cmake",
+  "libgl1-mesa-glx",
+  "build-essential",
+  "libboost-all-dev",
+  "libopenblas-dev",
+  "liblapack-dev",
+  "libx11-dev",
+  "libgtk-3-dev",
+  "libatlas-base-dev",
+  "python3-dev"
+]
+
+# Ruff config
 [tool.ruff]
 line-length = 110
 target-version = "py310"
 extend-exclude = [
     "migrations",
-    "*.egg-info", 
+    "*.egg-info",
     "build",
     "dist",
     "__pycache__",
@@ -81,11 +98,11 @@ extend-exclude = [
 [tool.ruff.lint]
 select = ["F", "E", "W", "I", "UP", "B"]
 ignore = [
-    "E501", # line too long (handled by formatter)
-    "F401", # unused imports (common in __init__.py)
-    "B018", # useless expression
-    "F403", # unable to detect undefined names from * import
-    "F405", # can't detect undefined names from * import
+    "E501",
+    "F401",
+    "B018",
+    "F403",
+    "F405",
 ]
 typing-modules = ["frappe.types.DF"]
 
@@ -94,7 +111,7 @@ quote-style = "double"
 indent-style = "tab"
 docstring-code-format = true
 
-# Black configuration (Python formatting)
+# Black config
 [tool.black]
 line-length = 110
 target-version = ['py310']
@@ -112,7 +129,7 @@ extend-exclude = '''
 )/
 '''
 
-# Pytest configuration (testing)
+# Pytest
 [tool.pytest.ini_options]
 minversion = "7.0"
 testpaths = ["hrms_biometric/tests"]
@@ -120,16 +137,16 @@ python_files = ["test_*.py", "*_test.py"]
 addopts = ["-ra", "-q", "--strict-markers"]
 markers = [
     "slow: marks tests as slow",
-    "integration: marks tests as integration tests", 
+    "integration: marks tests as integration tests",
     "unit: marks tests as unit tests",
 ]
 
-# Coverage configuration
+# Coverage
 [tool.coverage.run]
 source = ["hrms_biometric"]
 omit = [
     "*/tests/*",
-    "*/migrations/*", 
+    "*/migrations/*",
     "*/__pycache__/*",
     "setup.py",
 ]
@@ -143,15 +160,15 @@ exclude_lines = [
     "if __name__ == .__main__.:",
 ]
 
-# MyPy configuration (type checking)
+# MyPy
 [tool.mypy]
-python_version = "3.10" 
+python_version = "3.10"
 warn_return_any = false
 warn_unused_configs = true
 ignore_missing_imports = true
 exclude = ["migrations/", "build/", "dist/"]
 
-# Frappe-specific settings
+# Frappe-specific
 [tool.frappe]
 app_name = "hrms_biometric"
 app_title = "HRMS Biometric"

@@ -5,9 +5,10 @@ from frappe.model.document import Document
 
 class EmployeeFaceRecognition(Document):
     def validate(self):
+        pass
         # Validate employee ID format
-        if self.employee_id and not self.employee_id.startswith('EMP'):
-            frappe.throw("Employee ID must start with 'EMP'")
+        # if self.employee_id and not self.employee_id.startswith('EMP'):
+        #     frappe.throw("Employee ID must start with 'EMP'")
     
     def on_update(self):
         # Trigger face encoding generation after save

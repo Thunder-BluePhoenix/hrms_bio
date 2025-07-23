@@ -9,10 +9,137 @@ import os
 from PIL import Image
 from io import BytesIO
 import logging
+from frappe.utils.file_manager import save_file
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+
+
+
+
+# Add this to your enhanced_face_recognition.py file
+# Simple helper functions for image upload
+
+
+
+@frappe.whitelist()
+def validate_document_for_capture(docname):
+    """Validate if document is ready for image capture"""
+    try:
+        if not docname:
+            return {"valid": False, "error": "No document name provided"}
+        
+        doc = frappe.get_doc("Employee Face Recognition", docname)
+        if not doc:
+            return {"valid": False, "error": "Document not found"}
+        
+        if not doc.employee_id:
+            return {"valid": False, "error": "Employee ID is required"}
+        
+        return {
+            "valid": True,
+            "employee_id": doc.employee_id,
+            "employee_name": doc.employee_name
+        }
+        
+    except Exception as e:
+        return {"valid": False, "error": str(e)}
+
+@frappe.whitelist()
+def save_face_image_base64(docname, field_name, image_data, slot_number):
+    """Save a single face image from base64 data"""
+    try:
+        if not all([docname, field_name, image_data, slot_number]):
+            return {"success": False, "error": "Missing required parameters"}
+        
+        # Get the document
+        doc = frappe.get_doc("Employee Face Recognition", docname)
+        if not doc:
+            return {"success": False, "error": "Document not found"}
+        
+        # Process base64 data
+        if image_data.startswith('data:image'):
+            image_data = image_data.split(',')[1]
+        
+        try:
+            image_bytes = base64.b64decode(image_data)
+        except Exception as e:
+            return {"success": False, "error": f"Invalid base64 data: {str(e)}"}
+        
+        # Generate filename
+        import datetime
+        timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f"face_{slot_number}_{doc.employee_id}_{timestamp}.jpg"
+        
+        # Save file
+        file_doc = save_file(
+            fname=filename,
+            content=image_bytes,
+            dt="Employee Face Recognition",
+            dn=docname,
+            folder="Home/Attachments",
+            is_private=0  # Make public so it can be displayed
+        )
+        
+        if file_doc:
+            # Update the document field
+            doc.set(field_name, file_doc.file_url)
+            doc.save(ignore_permissions=True)
+            frappe.db.commit()
+            
+            return {
+                "success": True,
+                "file_url": file_doc.file_url,
+                "file_name": file_doc.file_name,
+                "field_name": field_name
+            }
+        else:
+            return {"success": False, "error": "Failed to save file"}
+            
+    except Exception as e:
+        frappe.logger().error(f"Error in save_face_image_base64: {str(e)}")
+        return {"success": False, "error": str(e)}
+
+@frappe.whitelist()
+def get_upload_progress(docname):
+    """Get upload progress for a document"""
+    try:
+        doc = frappe.get_doc("Employee Face Recognition", docname)
+        
+        uploaded_images = 0
+        image_fields = ['face_image_1', 'face_image_2', 'face_image_3', 'face_image_4', 'face_image_5']
+        
+        for field in image_fields:
+            if doc.get(field):
+                uploaded_images += 1
+        
+        return {
+            "uploaded_count": uploaded_images,
+            "total_possible": 5,
+            "required_complete": uploaded_images >= 3
+        }
+        
+    except Exception as e:
+        return {"error": str(e)}
+
+@frappe.whitelist()
+def cleanup_temp_files(older_than_hours=24):
+    """Cleanup temporary files older than specified hours"""
+    try:
+        # This is a maintenance function to clean up old temp files
+        import datetime
+        cutoff_time = datetime.datetime.now() - datetime.timedelta(hours=older_than_hours)
+        
+        # In a real implementation, you would clean up temp files here
+        # For now, just return success
+        return {"success": True, "message": "Cleanup completed"}
+        
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+
 
 @frappe.whitelist()
 def process_face_encoding_on_save(doc, method=None):

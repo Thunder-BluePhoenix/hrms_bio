@@ -9,7 +9,9 @@ import os
 from PIL import Image
 from io import BytesIO
 import logging
+import time
 from frappe.utils.file_manager import save_file
+
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -561,3 +563,260 @@ def test_face_recognition_system():
             "success": False,
             "error": str(e)
         }
+
+# ANALYSIS: Potential Issues & Improvements for Check-in/Check-out Logic
+
+"""
+CURRENT SYSTEM ANALYSIS:
+Your current log_attendance() function has good basic logic but could be enhanced
+"""
+
+# ISSUE 1: Same Day Multiple Check-ins
+# Current logic only looks for latest record, but what if:
+# - Employee checks in at 9 AM
+# - Goes for lunch break at 1 PM (should be check-out)  
+# - Returns from lunch at 2 PM (should be check-in again)
+# - Leaves office at 6 PM (final check-out)
+
+def enhanced_log_attendance(employee, captured_image, confidence, kiosk_name):
+    """Enhanced attendance logging with better logic"""
+    try:
+        current_time = datetime.now()
+        current_date = current_time.date()
+        
+        # Get ALL attendance records for today (not just latest)
+        existing_attendance = frappe.get_all(
+            "Employee Attendance",
+            filters={
+                "employee_id": employee.employee_id,
+                "attendance_date": current_date
+            },
+            fields=["name", "check_in_time", "check_out_time", "attendance_type", "creation"],
+            order_by="check_in_time desc"  # Order by actual check-in time
+        )
+        
+        # IMPROVED LOGIC: Determine check-in vs check-out based on pattern
+        attendance_type = determine_attendance_type(existing_attendance, current_time)
+        
+        # IMPROVEMENT: Minimum time gap between check-ins (prevent accidental double-taps)
+        if not validate_minimum_time_gap(existing_attendance, current_time):
+            return {
+                "success": False,
+                "message": "Please wait at least 5 minutes between check-ins"
+            }
+        
+        # IMPROVEMENT: Handle break times
+        if attendance_type == "Check Out":
+            # Update the latest incomplete record
+            incomplete_record = get_incomplete_attendance_record(existing_attendance)
+            if incomplete_record:
+                update_checkout_record(incomplete_record, current_time, captured_image, confidence)
+            else:
+                return {"success": False, "message": "No active check-in found"}
+                
+        else:  # Check In
+            create_checkin_record(employee, current_time, captured_image, confidence, kiosk_name)
+            
+        # IMPROVEMENT: Send contextual notifications
+        # send_smart_notification(employee, attendance_type, current_time, existing_attendance)
+        
+        return {
+            "success": True,
+            "attendance_type": attendance_type,
+            "time": current_time,
+            "message": f"{attendance_type} recorded successfully"
+        }
+        
+    except Exception as e:
+        frappe.log_error(f"Enhanced attendance logging error: {str(e)}")
+        return {"success": False, "message": str(e)}
+
+def determine_attendance_type(existing_records, current_time):
+    """Smarter logic to determine if this should be check-in or check-out"""
+    
+    if not existing_records:
+        return "Check In"  # First entry of the day
+    
+    # Find the most recent incomplete record
+    for record in existing_records:
+        if record.check_in_time and not record.check_out_time:
+            # There's an active check-in without check-out
+            return "Check Out"
+    
+    # All records are complete (have both check-in and check-out)
+    # This could be returning from break/lunch
+    return "Check In"
+
+def validate_minimum_time_gap(existing_records, current_time, min_gap_minutes=5):
+    """Prevent accidental double-taps by enforcing minimum time gap"""
+    
+    if not existing_records:
+        return True
+    
+    latest_record = existing_records[0]
+    
+    # Check against latest check-in time
+    if latest_record.check_in_time:
+        time_diff = current_time - latest_record.check_in_time
+        if time_diff.total_seconds() < (min_gap_minutes * 60):
+            return False
+    
+    # Check against latest check-out time if exists
+    if latest_record.check_out_time:
+        time_diff = current_time - latest_record.check_out_time
+        if time_diff.total_seconds() < (min_gap_minutes * 60):
+            return False
+    
+    return True
+
+def get_incomplete_attendance_record(existing_records):
+    """Find the most recent attendance record without check-out"""
+    for record in existing_records:
+        if record.check_in_time and not record.check_out_time:
+            return frappe.get_doc("Employee Attendance", record.name)
+    return None
+
+def update_checkout_record(doc, current_time, captured_image, confidence):
+    """Update existing record with check-out information"""
+    doc.check_out_time = current_time
+    doc.attendance_type = "Check Out"
+    
+    # Calculate working hours
+    if doc.check_in_time:
+        time_diff = current_time - doc.check_in_time
+        doc.total_hours = round(time_diff.total_seconds() / 3600, 2)
+    
+    # Add check-out image if needed
+    if captured_image:
+        doc.face_image_captured = captured_image
+    
+    doc.confidence_score = confidence
+    doc.save(ignore_permissions=True)
+
+def create_checkin_record(employee, current_time, captured_image, confidence, kiosk_name):
+    """Create new check-in record"""
+    doc = frappe.new_doc("Employee Attendance")
+    doc.employee_id = employee.employee_id
+    doc.employee_name = employee.employee_name
+    doc.department = employee.department
+    doc.attendance_date = current_time.date()
+    doc.check_in_time = current_time
+    doc.attendance_type = "Check In"
+    doc.kiosk_location = kiosk_name or "Unknown"
+    doc.confidence_score = confidence
+    doc.verification_status = "Verified"
+    doc.created_by_system = 1
+    
+    if captured_image:
+        doc.face_image_captured = captured_image
+    
+    doc.insert(ignore_permissions=True)
+
+def send_smart_notification(employee, attendance_type, current_time, existing_records):
+    """Send contextual notifications based on attendance patterns"""
+    
+    # Check if this is late arrival (after 9:30 AM for example)
+    if attendance_type == "Check In" and current_time.time() > time(9, 30):
+        send_late_arrival_notification(employee, current_time)
+    
+    # Check if this is early departure (before 5:30 PM for example)
+    elif attendance_type == "Check Out" and current_time.time() < time(17, 30):
+        send_early_departure_notification(employee, current_time)
+    
+    # Check for overtime (after 7 PM for example)
+    elif attendance_type == "Check Out" and current_time.time() > time(19, 0):
+        send_overtime_notification(employee, current_time, existing_records)
+
+# ISSUE 2: Handling Multiple Locations
+def validate_location_consistency(employee_id, current_location, current_date):
+    """Ensure employee isn't checking in from multiple locations simultaneously"""
+    
+    active_checkins = frappe.get_all(
+        "Employee Attendance",
+        filters={
+            "employee_id": employee_id,
+            "attendance_date": current_date,
+            "check_in_time": ["is", "set"],
+            "check_out_time": ["is", "not set"]
+        },
+        fields=["kiosk_location", "check_in_time"]
+    )
+    
+    for checkin in active_checkins:
+        if checkin.kiosk_location != current_location:
+            return False, f"You are still checked in at {checkin.kiosk_location}"
+    
+    return True, "Location validation passed"
+
+# ISSUE 3: Break Time Handling
+def detect_break_patterns(existing_records, current_time):
+    """Detect if this might be a break check-out/check-in"""
+    
+    if not existing_records:
+        return False
+    
+    latest_checkin = None
+    for record in existing_records:
+        if record.check_in_time and not record.check_out_time:
+            latest_checkin = record.check_in_time
+            break
+    
+    if latest_checkin:
+        time_since_checkin = current_time - latest_checkin
+        # If it's been 3-5 hours since check-in, might be lunch break
+        if 3 <= time_since_checkin.total_seconds() / 3600 <= 5:
+            return True
+    
+    return False
+
+# ISSUE 4: Overnight Shift Handling
+def handle_overnight_shifts(employee, current_time, existing_records):
+    """Handle employees working overnight shifts"""
+    
+    # Check if employee has overnight shift pattern
+    shift_settings = get_employee_shift_settings(employee.employee_id)
+    
+    if shift_settings and shift_settings.is_overnight_shift:
+        # For overnight shifts, attendance date should be the shift start date
+        # not the current date
+        return calculate_overnight_attendance_date(current_time, shift_settings)
+    
+    return current_time.date()
+
+def get_employee_shift_settings(employee_id):
+    """Get employee's shift configuration"""
+    # This would integrate with ERPNext's Shift Management
+    return frappe.get_value("Employee", employee_id, 
+                          ["shift_type", "default_shift"], as_dict=True)
+
+# ISSUE 5: Data Integrity Checks
+def validate_attendance_data_integrity(employee_id, attendance_date):
+    """Ensure attendance data is consistent"""
+    
+    records = frappe.get_all(
+        "Employee Attendance",
+        filters={
+            "employee_id": employee_id,
+            "attendance_date": attendance_date
+        },
+        fields=["check_in_time", "check_out_time", "total_hours"],
+        order_by="check_in_time"
+    )
+    
+    issues = []
+    
+    for i, record in enumerate(records):
+        # Check for overlapping times
+        if i > 0:
+            prev_record = records[i-1]
+            if (prev_record.check_out_time and record.check_in_time and 
+                record.check_in_time < prev_record.check_out_time):
+                issues.append(f"Overlapping attendance times detected")
+        
+        # Validate total hours calculation
+        if record.check_in_time and record.check_out_time:
+            calculated_hours = (record.check_out_time - record.check_in_time).total_seconds() / 3600
+            if abs(calculated_hours - (record.total_hours or 0)) > 0.1:
+                issues.append(f"Total hours mismatch in record")
+    
+    return issues
